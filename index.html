@@ -3,15 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUNJEDS_TERM v4.2.1995 - Interactive Portfolio</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥️</text></svg>">
-
-  <script type="module" crossorigin src="./assets/index-S3I9J_Mj.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BjLRgy6W.css">
+    <title>UNJED's Portfolio</title>
+    <link rel="icon" type="image/png" href="./assets/icon-BxyNuwHG.png">
+    <style>
+        body {
+            background: #000 !important;
+            font-family: "Courier New", monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff !important;
+        }
+        #canvas {
+            white-space: pre;
+            font-size: 8px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            text-align: left;
+            line-height: 1;
+        }
+        #root { display: none; width: 100%; height: 100% }
+    </style>
+  <script type="module" crossorigin src="./assets/index-C4eNajJK.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-l1uWfBy3.css">
 </head>
 <body>
-    <div id="root">
-        <div class="loading">Initializing MUNJEDS_TERM</div>
-    </div>
+    <div id="canvas">Loading...</div>
+    <div id="root"></div>
+    <script>
+    const canvas = document.getElementById('canvas');
+    const width = 17;
+    const height = 13;
+    let grid = Array(width * height).fill(' ');
+    let x = 0, y = 0;
+    let dir = 0;
+    let steps = 0;
+    const total = width * height;
+    function draw() {
+        if (steps >= total) return;
+        grid[y * width + x] = '■';
+        steps++;
+        let nx = x, ny = y;
+        if (dir === 0) nx++;
+        else if (dir === 1) ny++;
+        else if (dir === 2) nx--;
+        else if (dir === 3) ny--;
+        const blocked =
+            nx < 0 || ny < 0 ||
+            nx >= width || ny >= height ||
+            grid[ny * width + nx] === '■';
+        if (blocked) {
+            dir = (dir + 1) % 4;
+            if (dir === 0) { nx = x + 1; ny = y; }
+            if (dir === 1) { nx = x; ny = y + 1; }
+            if (dir === 2) { nx = x - 1; ny = y; }
+            if (dir === 3) { nx = x; ny = y - 1; }
+        }
+        if (
+            nx < 0 || ny < 0 ||
+            nx >= width || ny >= height ||
+            grid[ny * width + nx] === '■'
+        ) {
+            render();
+            return;
+        }
+        x = nx;
+        y = ny;
+        render();
+        requestAnimationFrame(draw);
+    }
+    function render() {
+        let out = '';
+        for (let i = 0; i < height; i++) {
+            out += grid.slice(i * width, (i + 1) * width).join('') + '\n';
+        }
+        canvas.textContent = out;
+    }
+    draw();
+    setTimeout(() => {
+        canvas.remove();
+        document.getElementById('root').style.display = 'block';
+    }, 4000);    
+    </script>
 </body>
 </html>
